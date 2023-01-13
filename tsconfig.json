@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"outDir": "dist",
+		"esModuleInterop": true,
+		"target": "es2020",
+		"module": "CommonJS",
+		"rootDirs": ["src", "tests"],
+		"baseUrl": "src"
+	},
+	"ts-node": {
+		"esm": true
+	},
+	"include": ["src", "tests"]
+}
