@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { listAll } from "controllers";
+import { listAll, listAllSentByAnUser } from "controllers";
 
 const messageRouter = Router();
 
-messageRouter.get("/messages", listAll);
+messageRouter
+	.get("/messages", listAll)
+	.get("/messages/:userId", listAllSentByAnUser);
 
 export { messageRouter };

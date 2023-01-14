@@ -11,4 +11,22 @@ async function listAll(req: Request, res: Response) {
 	}
 }
 
-export { listAll };
+async function listAllSentByAnUser(req: Request, res: Response) {
+	const userId = Number(req.params.userId) || null;
+
+	if (!userId) {
+		return responseHelper.BAD_REQUEST({
+			res,
+			body: { message: "Id de usuário inválido." },
+		});
+	}
+
+	try {
+		const messages = await messagesService.findMessagesSentByUser(userId);
+		return responseHelper.OK({ res, body: messages });
+	} catch (error) {
+		return responseHelper.SERVER_ERROR({ res });
+	}
+}
+
+export { listAll, listAllSentByAnUser };

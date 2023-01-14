@@ -32,3 +32,30 @@ describe("GET /messages", () => {
 		]);
 	});
 });
+
+describe("GET /messages/:userId", () => {
+	const route = "/messages";
+
+	it("should return status 400 when userId is invalid", async () => {
+		const response = await app.get(`${route}/0`);
+		expect(response.status).toBe(httpStatus.BAD_REQUEST);
+	});
+
+	it("should return status 200 and an empty array when user have not sent messages", async () => {
+		const response = await app.get(`${route}/1`);
+		expect(response.status).toBe(httpStatus.OK);
+		expect(response.body).toEqual([]);
+	});
+
+	it("should return status 200 and the messages sent by user", async () => {
+		const { id } = await generateValidUser();
+		const message = await createMessage(id);
+
+		const response = await app.get(`${route}/${id}`);
+
+		expect(response.status).toBe(httpStatus.OK);
+		expect(response.body).toEqual([
+			{ ...message, date: message.date.toISOString() },
+		]);
+	});
+});

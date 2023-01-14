@@ -4,4 +4,8 @@ async function findMessages() {
 	return messagesRepository.findMessages();
 }
 
-export { findMessages };
+async function findMessagesSentByUser(userId: number) {
+	return messagesRepository.findMessagesSentByUser(userId);
+}
+
+export { findMessages, findMessagesSentByUser };
