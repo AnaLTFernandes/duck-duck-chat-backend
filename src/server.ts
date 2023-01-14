@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { loadEnv } from "config/env";
-import { signRouter, usersRouter } from "./routers";
+import { messageRouter, signRouter, usersRouter } from "./routers";
 
 loadEnv();
 
@@ -12,6 +12,7 @@ server
 	.use(cors())
 	.get("/status", (req, res) => res.send("It's alive!!!"))
 	.use(usersRouter)
-	.use(signRouter);
+	.use(signRouter)
+	.use(messageRouter);
 
 export default server;
