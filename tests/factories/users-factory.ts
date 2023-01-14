@@ -1,7 +1,8 @@
 import { prisma } from "../../src/database/prisma";
 import { faker } from "@faker-js/faker";
+import { users } from "@prisma/client";
 
-function createUsers() {
+function createUser() {
 	return prisma.users.create({
 		data: {
 			username: faker.name.firstName(),
@@ -12,4 +13,4 @@ function createUsers() {
 	});
 }
 
-export { createUsers };
+export { createUser };

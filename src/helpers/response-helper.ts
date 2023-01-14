@@ -14,16 +14,20 @@ function CREATED<Type>({ res, body }: params<Type>) {
 	return res.status(httpStatus.CREATED).send(body);
 }
 
-function NO_CONTENT<Type>({ res, body }: params<Type>) {
-	return res.status(httpStatus.NO_CONTENT).send(body);
+function NO_CONTENT<Type>({ res }: params<Type>) {
+	return res.sendStatus(httpStatus.NO_CONTENT);
+}
+
+function BAD_REQUEST<Type>({ res, body }: params<Type>) {
+	return res.status(httpStatus.BAD_REQUEST).send(body);
 }
 
 function NOT_FOUND<Type>({ res, body }: params<Type>) {
 	return res.status(httpStatus.NOT_FOUND).send(body);
 }
 
-function BAD_REQUEST<Type>({ res, body }: params<Type>) {
-	return res.status(httpStatus.BAD_REQUEST).send(body);
+function CONFLICT<Type>({ res, body }: params<Type>) {
+	return res.status(httpStatus.CONFLICT).send(body);
 }
 
 function UNAUTHORIZED<Type>({ res, body }: params<Type>) {
@@ -43,4 +47,5 @@ export {
 	BAD_REQUEST,
 	UNAUTHORIZED,
 	SERVER_ERROR,
+	CONFLICT,
 };

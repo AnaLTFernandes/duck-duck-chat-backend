@@ -1,6 +1,6 @@
 import server from "server";
 import supertest from "supertest";
-import { createUsers } from "../factories/users-factory";
+import { createUser } from "../factories/users-factory";
 import { cleanDatabase } from "../utils/clean-database";
 
 const app = supertest(server);
@@ -17,7 +17,7 @@ describe("GET /users", () => {
 	});
 
 	it("should return all users", async () => {
-		const users = await createUsers();
+		const users = await createUser();
 		const response = await app.get("/users");
 
 		expect(response.body).toEqual([
