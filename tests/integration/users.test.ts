@@ -1,7 +1,7 @@
 import server from "server";
 import supertest from "supertest";
 import { createUser } from "../factories/users-factory";
-import { cleanDatabase } from "../utils/clean-database";
+import { cleanDatabase } from "../helpers/clean-database";
 
 const app = supertest(server);
 

@@ -32,7 +32,11 @@ async function createSession(credentials: CreateSessionParams) {
 	return { token };
 }
 
+async function finishSession(sessionId: number) {
+	return signRepository.updateActiveSession(sessionId);
+}
+
 export type CreateUserParams = Omit<users, "id">;
 export type CreateSessionParams = Omit<users, "id" | "username" | "image">;
 
-export { createUser, createSession };
+export { createUser, createSession, finishSession };

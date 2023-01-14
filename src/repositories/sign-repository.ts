@@ -29,7 +29,34 @@ function createSession(data: CreateSessionParams) {
 	});
 }
 
+function findActiveSessionByUserId(userId: number) {
+	return prisma.sessions.findFirst({
+		where: {
+			userId,
+			active: true,
+		},
+	});
+}
+
+function updateActiveSession(id: number) {
+	return prisma.sessions.update({
+		where: {
+			id,
+		},
+		data: {
+			active: false,
+		},
+	});
+}
+
 type CreateUserParams = Omit<users, "id">;
 type CreateSessionParams = { userId: number; token: string };
 
-export { createUser, findUserByEmail, findUserByUsername, createSession };
+export {
+	createUser,
+	findUserByEmail,
+	findUserByUsername,
+	createSession,
+	findActiveSessionByUserId,
+	updateActiveSession,
+};

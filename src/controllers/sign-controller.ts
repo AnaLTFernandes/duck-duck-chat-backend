@@ -31,4 +31,13 @@ async function insertSession(req: Request, res: Response) {
 	}
 }
 
-export { insertUser, insertSession };
+async function finishSession(req: Request, res: Response) {
+	try {
+		await signService.finishSession(res.locals.sessionId);
+		return responseHelper.NO_CONTENT({ res });
+	} catch (error) {
+		return responseHelper.SERVER_ERROR({ res });
+	}
+}
+
+export { insertUser, insertSession, finishSession };
