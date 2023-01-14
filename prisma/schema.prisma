@@ -9,18 +9,18 @@ datasource db {
 
 model messages {
   id     Int       @id @default(autoincrement())
-  userid Int?
+  userId Int?
   text   String
   date   DateTime? @default(now()) @db.Timestamp(6)
-  users  users?    @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users  users?    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model sessions {
   id     Int      @id @default(autoincrement())
-  userid Int?
+  userId Int?
   token  String
   active Boolean? @default(true)
-  users  users?   @relation(fields: [userid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users  users?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 model users {

@@ -1,9 +1,10 @@
 import { faker } from "@faker-js/faker";
 import supertest from "supertest";
 import httpStatus from "http-status";
+import bcrypt from "bcrypt";
 import server from "server";
 import { cleanDatabase } from "../utils/clean-database";
-import { createUser } from "../factories";
+import { createCustomUser, createUser } from "../factories";
 import { prisma } from "database/prisma";
 
 const app = supertest(server);
@@ -74,6 +75,55 @@ describe("POST /sign-up", () => {
 		await app.post(route).send(body);
 
 		const finalDbCount = await prisma.users.count();
+
+		expect(finalDbCount).toBe(initialDbCount + 1);
+	});
+});
+
+describe("POST /sign-in", () => {
+	const route = "/sign-in";
+
+	it("should return status 400 when body is invalid", async () => {
+		const body = { email: faker.fake.name };
+		const response = await app.post(route).send(body);
+		expect(response.status).toBe(httpStatus.BAD_REQUEST);
+	});
+
+	it("should return status 400 when there is no user with sent data", async () => {
+		const body = {
+			email: faker.internet.email(),
+			password: faker.lorem.word(),
+		};
+
+		const response = await app.post(route).send(body);
+		expect(response.status).toBe(httpStatus.BAD_REQUEST);
+	});
+
+	it("should return status 200 and a session token when data is valid", async () => {
+		const password = faker.word.noun();
+		const hashedPassword = await bcrypt.hash(password, 13);
+		const { email } = await createCustomUser({
+			password: hashedPassword,
+		});
+
+		const response = await app.post(route).send({ email, password });
+
+		expect(response.status).toBe(httpStatus.OK);
+		expect(response.body).toEqual({ token: expect.any(String) });
+	});
+
+	it("should save a new session in database", async () => {
+		const password = faker.word.noun();
+		const hashedPassword = await bcrypt.hash(password, 13);
+		const { email } = await createCustomUser({
+			password: hashedPassword,
+		});
+
+		const initialDbCount = await prisma.sessions.count();
+
+		await app.post(route).send({ email, password });
+
+		const finalDbCount = await prisma.sessions.count();
 
 		expect(finalDbCount).toBe(initialDbCount + 1);
 	});

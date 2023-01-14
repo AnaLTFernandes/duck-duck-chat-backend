@@ -21,6 +21,15 @@ function findUserByUsername(username: string) {
 	});
 }
 
-type CreateUserParams = Omit<users, "id">;
+function createSession(data: CreateSessionParams) {
+	return prisma.sessions.create({
+		data: {
+			...data,
+		},
+	});
+}
 
-export { createUser, findUserByEmail, findUserByUsername };
+type CreateUserParams = Omit<users, "id">;
+type CreateSessionParams = { userId: number; token: string };
+
+export { createUser, findUserByEmail, findUserByUsername, createSession };

@@ -12,4 +12,9 @@ const signUpSchema = Joi.object({
 		.required(),
 });
 
-export { signUpSchema };
+const signInSchema = Joi.object({
+	email: Joi.string().email().required(),
+	password: Joi.string().required(),
+});
+
+export { signUpSchema, signInSchema };

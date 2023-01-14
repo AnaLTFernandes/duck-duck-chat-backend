@@ -15,4 +15,20 @@ async function insertUser(req: Request, res: Response) {
 	}
 }
 
-export { insertUser };
+async function insertSession(req: Request, res: Response) {
+	try {
+		const session = await signService.createSession(req.body);
+		return responseHelper.OK({ res, body: session });
+	} catch (error) {
+		if (error.name === "BadRequest") {
+			return responseHelper.BAD_REQUEST({
+				res,
+				body: { message: "Usuário/Senha inválidos." },
+			});
+		}
+
+		return responseHelper.SERVER_ERROR({ res });
+	}
+}
+
+export { insertUser, insertSession };

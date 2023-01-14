@@ -13,4 +13,18 @@ function createUser() {
 	});
 }
 
-export { createUser };
+function createCustomUser(data: CreateCustomUserParams) {
+	return prisma.users.create({
+		data: {
+			username: faker.name.firstName(),
+			email: faker.internet.email(),
+			image: faker.image.avatar(),
+			password: faker.internet.password(),
+			...data
+		},
+	});
+}
+
+type CreateCustomUserParams = Partial<Omit<users, 'id'>>
+
+export { createUser, createCustomUser };
