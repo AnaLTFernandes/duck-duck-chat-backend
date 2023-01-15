@@ -29,7 +29,7 @@ async function createSession(credentials: CreateSessionParams) {
 
 	await signRepository.createSession({ userId: user.id, token });
 
-	return { token };
+	return { token, username: user.username, image: user.image };
 }
 
 async function finishSession(sessionId: number) {

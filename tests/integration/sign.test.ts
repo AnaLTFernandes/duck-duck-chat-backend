@@ -104,12 +104,12 @@ describe("POST /sign-in", () => {
 	});
 
 	it("should return status 200 and a session token when data is valid", async () => {
-		const { email, password } = await generateValidUser();
+		const { email, password, id, ...data } = await generateValidUser();
 
 		const response = await app.post(route).send({ email, password });
 
 		expect(response.status).toBe(httpStatus.OK);
-		expect(response.body).toEqual({ token: expect.any(String) });
+		expect(response.body).toEqual({ token: expect.any(String), ...data });
 	});
 
 	it("should save a new session in database", async () => {
