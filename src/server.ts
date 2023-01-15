@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import { loadEnv } from "config/env";
+import { loadEnv } from "./config/env";
 import { messageRouter, signRouter, usersRouter } from "./routers";
 
 loadEnv();

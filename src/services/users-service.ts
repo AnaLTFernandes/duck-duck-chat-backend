@@ -1,4 +1,4 @@
-import * as usersRepository from "repositories/users-repository";
+import * as usersRepository from "../repositories/users-repository";
 
 async function getAll() {
 	const users = await usersRepository.find();

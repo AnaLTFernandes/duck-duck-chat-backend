@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import * as responseHelper from "helpers/response-helper";
-import * as signService from "services/sign-service";
+import * as responseHelper from "../helpers/response-helper";
+import * as signService from "../services/sign-service";
 
 async function insertUser(req: Request, res: Response) {
 	try {

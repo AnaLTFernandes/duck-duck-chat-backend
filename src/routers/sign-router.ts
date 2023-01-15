@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { finishSession, insertSession, insertUser } from "controllers";
-import { validateSchema } from "middlewares/validate-schema-middleware";
-import { signInSchema, signUpSchema } from "schemas/sign-schemas";
-import { authenticationMiddleware } from "middlewares/authentication-middleware";
+import { signInSchema, signUpSchema } from "../schemas/sign-schemas";
+import { validateSchema } from "../middlewares/validate-schema-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
+import { finishSession, insertSession, insertUser } from "../controllers";
 
 const signRouter = Router();
 

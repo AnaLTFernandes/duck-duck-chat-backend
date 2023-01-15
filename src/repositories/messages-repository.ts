@@ -1,5 +1,5 @@
 import { messages } from "@prisma/client";
-import { prisma } from "database/prisma";
+import { prisma } from "../database/prisma";
 
 function findMessages() {
 	return prisma.messages.findMany();

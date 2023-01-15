@@ -1,6 +1,6 @@
 import { messages } from "@prisma/client";
-import { notFoundError, unauthorizedError } from "helpers/errors";
-import * as messagesRepository from "repositories/messages-repository";
+import { notFoundError, unauthorizedError } from "../helpers/errors";
+import * as messagesRepository from "../repositories/messages-repository";
 
 async function findMessages() {
 	return messagesRepository.findMessages();

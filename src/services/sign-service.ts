@@ -1,8 +1,8 @@
 import { users } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { badRequestError, conflictError } from "helpers/errors";
-import * as signRepository from "repositories/sign-repository";
+import { badRequestError, conflictError } from "../helpers/errors";
+import * as signRepository from "../repositories/sign-repository";
 
 async function createUser(user: CreateUserParams) {
 	const existUserWithEmail = await signRepository.findUserByEmail(user.email);

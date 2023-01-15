@@ -1,18 +1,18 @@
 import { Router } from "express";
-import { authenticationMiddleware } from "middlewares/authentication-middleware";
-import { validateSchema } from "middlewares/validate-schema-middleware";
+import { authenticationMiddleware } from "../middlewares/authentication-middleware";
+import { validateSchema } from "../middlewares/validate-schema-middleware";
 import {
 	listParamsSchema,
 	postParamsSchema,
 	postSchema,
-} from "schemas/message-schemas";
+} from "../schemas/message-schemas";
 import {
 	deleteMessage,
 	edit,
 	insert,
 	listAll,
 	listAllSentByAnUser,
-} from "controllers";
+} from "../controllers";
 
 const messageRouter = Router();
 

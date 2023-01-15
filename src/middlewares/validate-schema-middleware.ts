@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
-import * as responseHelper from "helpers/response-helper";
+import * as responseHelper from "../helpers/response-helper";
 
 export function validateSchema(schema: Joi.ObjectSchema<any>, type = 'body') {
 	return (req: Request, res: Response, next: NextFunction) => {

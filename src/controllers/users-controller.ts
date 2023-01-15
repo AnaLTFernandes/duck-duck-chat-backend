@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import * as responseHelper from "helpers/response-helper";
-import * as usersService from "services/users-service";
+import * as responseHelper from "../helpers/response-helper";
+import * as usersService from "../services/users-service";
 
 async function getAll(req: Request, res: Response) {
 	try {
