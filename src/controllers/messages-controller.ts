@@ -29,4 +29,15 @@ async function listAllSentByAnUser(req: Request, res: Response) {
 	}
 }
 
-export { listAll, listAllSentByAnUser };
+async function insert(req: Request, res: Response) {
+	const { userId } = res.locals;
+
+	try {
+		await messagesService.createMessage({ userId, ...req.body });
+		return responseHelper.CREATED({ res });
+	} catch (error) {
+		return responseHelper.SERVER_ERROR({ res });
+	}
+}
+
+export { listAll, listAllSentByAnUser, insert };

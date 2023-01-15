@@ -1,3 +1,4 @@
+import { messages } from "@prisma/client";
 import { prisma } from "database/prisma";
 
 function findMessages() {
@@ -12,4 +13,12 @@ function findMessagesSentByUser(userId: number) {
 	});
 }
 
-export { findMessages, findMessagesSentByUser };
+function createMessage(data: CreateMessageParams) {
+	return prisma.messages.create({
+		data: { ...data },
+	});
+}
+
+type CreateMessageParams = Omit<messages, "id" | "date">;
+
+export { findMessages, findMessagesSentByUser, createMessage };
