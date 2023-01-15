@@ -3,11 +3,15 @@ import { notFoundError, unauthorizedError } from "../helpers/errors";
 import * as messagesRepository from "../repositories/messages-repository";
 
 async function findMessages() {
-	return messagesRepository.findMessages();
+	const messages = await messagesRepository.findMessages();
+	const formatedMessages = formatMessages(messages);
+	return formatedMessages;
 }
 
 async function findMessagesSentByUser(userId: number) {
-	return messagesRepository.findMessagesSentByUser(userId);
+	const messages = await messagesRepository.findMessagesSentByUser(userId);
+	const formatedMessages = formatMessages(messages);
+	return formatedMessages;
 }
 
 async function createMessage(data: CreateMessageParams) {
@@ -33,6 +37,21 @@ async function deleteMessage(data: DeleteMessageParams) {
 
 	return messagesRepository.deleteMessage(data.messageId);
 }
+
+function formatMessages(messages: FormatMessagesParams) {
+	return messages.map(({ users, ...data }) => ({
+		...data,
+		userImage: users.image,
+		username: users.username,
+	}));
+}
+
+type FormatMessagesParams = (messages & {
+	users: {
+		username: string;
+		image: string;
+	};
+})[];
 
 export type CreateMessageParams = Omit<messages, "id" | "date">;
 export type UpdateMessageParams = Omit<messages, "id" | "date"> & {

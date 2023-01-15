@@ -27,14 +27,19 @@ describe("GET /messages", () => {
 	});
 
 	it("should return status 200 and an messages array", async () => {
-		const { id } = await generateValidUser();
+		const { id, username, image } = await generateValidUser();
 		const message = await createMessage(id);
 
 		const response = await app.get(route);
 
 		expect(response.status).toBe(httpStatus.OK);
 		expect(response.body).toEqual([
-			{ ...message, date: message.date.toISOString() },
+			{
+				...message,
+				date: message.date.toISOString(),
+				username,
+				userImage: image,
+			},
 		]);
 	});
 });
@@ -54,14 +59,19 @@ describe("GET /messages/:userId", () => {
 	});
 
 	it("should return status 200 and the messages sent by user", async () => {
-		const { id } = await generateValidUser();
+		const { id, username, image } = await generateValidUser();
 		const message = await createMessage(id);
 
 		const response = await app.get(`${route}/${id}`);
 
 		expect(response.status).toBe(httpStatus.OK);
 		expect(response.body).toEqual([
-			{ ...message, date: message.date.toISOString() },
+			{
+				...message,
+				date: message.date.toISOString(),
+				username,
+				userImage: image,
+			},
 		]);
 	});
 });

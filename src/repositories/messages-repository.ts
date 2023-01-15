@@ -2,13 +2,30 @@ import { messages } from "@prisma/client";
 import { prisma } from "../database/prisma";
 
 function findMessages() {
-	return prisma.messages.findMany();
+	return prisma.messages.findMany({
+		include: {
+			users: {
+				select: {
+					image: true,
+					username: true,
+				},
+			},
+		},
+	});
 }
 
 function findMessagesSentByUser(userId: number) {
 	return prisma.messages.findMany({
 		where: {
 			userId,
+		},
+		include: {
+			users: {
+				select: {
+					image: true,
+					username: true,
+				},
+			},
 		},
 	});
 }
