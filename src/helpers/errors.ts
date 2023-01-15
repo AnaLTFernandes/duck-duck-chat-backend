@@ -1,6 +1,6 @@
 function notFoundError() {
 	return {
-		name: "NotFoundError",
+		name: "NotFound",
 	};
 }
 

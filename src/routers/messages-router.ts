@@ -1,15 +1,31 @@
 import { Router } from "express";
-import { insert, listAll, listAllSentByAnUser } from "controllers";
+import { edit, insert, listAll, listAllSentByAnUser } from "controllers";
 import { authenticationMiddleware } from "middlewares/authentication-middleware";
 import { validateSchema } from "middlewares/validate-schema-middleware";
-import { postSchema } from "schemas/message-schemas";
+import {
+	listParamsSchema,
+	postParamsSchema,
+	postSchema,
+} from "schemas/message-schemas";
 
 const messageRouter = Router();
 
+const route = "/messages";
+
 messageRouter
-	.get("/messages", listAll)
-	.get("/messages/:userId", listAllSentByAnUser)
+	.get(route, listAll)
+	.get(
+		`${route}/:userId`,
+		validateSchema(listParamsSchema, "params"),
+		listAllSentByAnUser
+	)
 	.all("/*", authenticationMiddleware)
-	.post("/messages", validateSchema(postSchema), insert);
+	.post(route, validateSchema(postSchema), insert)
+	.put(
+		`${route}/:id`,
+		validateSchema(postSchema),
+		validateSchema(postParamsSchema, "params"),
+		edit
+	);
 
 export { messageRouter };

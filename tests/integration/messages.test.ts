@@ -134,3 +134,96 @@ describe("POST /messages", () => {
 		});
 	});
 });
+
+describe("PUT /messages/:id", () => {
+	const route = "/messages";
+
+	it("should return status 401 when no token is sent", async () => {
+		const response = await app.put(`${route}/1`);
+		expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+	});
+
+	it("should return status 401 when token is invalid", async () => {
+		const token = `Bearer ${faker.lorem.words()}`;
+		const response = await app.put(`${route}/1`).set("Authorization", token);
+		expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+	});
+
+	describe("when token is valid", () => {
+		it("should return status 401 if there is no active session for the user", async () => {
+			const { id } = await generateValidUser();
+			const token = jwt.sign({ user: id }, process.env.JWT_SECRET);
+			const authorization = `Bearer ${token}`;
+
+			const response = await app
+				.put(`${route}/1`)
+				.set("Authorization", authorization);
+
+			expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+		});
+
+		it("should return status 400 when body is invalid", async () => {
+			const token = await generateValidToken();
+			const body = { [faker.lorem.word()]: faker.lorem.sentence() };
+
+			const response = await app
+				.put(`${route}/1`)
+				.set("Authorization", token)
+				.send(body);
+
+			expect(response.status).toBe(httpStatus.BAD_REQUEST);
+		});
+
+		describe("when body is valid", () => {
+			const body = { text: faker.lorem.sentence() };
+
+			it("should return status 400 when id params is invalid", async () => {
+				const token = await generateValidToken();
+
+				const response = await app
+					.put(`${route}/0`)
+					.set("Authorization", token)
+					.send(body);
+
+				expect(response.status).toBe(httpStatus.BAD_REQUEST);
+			});
+
+			it("should return status 404 when there is no message with given id", async () => {
+				const token = await generateValidToken();
+
+				const response = await app
+					.put(`${route}/1`)
+					.set("Authorization", token)
+					.send(body);
+
+				expect(response.status).toBe(httpStatus.NOT_FOUND);
+			});
+
+			it("should return status 401 when user is not the owner of the message", async () => {
+				const token = await generateValidToken();
+				const otherUser = await generateValidUser();
+				const message = await createMessage(otherUser.id);
+
+				const response = await app
+					.put(`${route}/${message.id}`)
+					.set("Authorization", token)
+					.send(body);
+
+				expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+			});
+
+			it("should return status 204 and no data", async () => {
+				const user = await generateValidUser();
+				const token = await generateValidToken(user);
+				const message = await createMessage(user.id);
+
+				const response = await app
+					.put(`${route}/${message.id}`)
+					.set("Authorization", token)
+					.send(body);
+
+				expect(response.status).toBe(httpStatus.NO_CONTENT);
+			});
+		});
+	});
+});

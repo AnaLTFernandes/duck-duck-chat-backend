@@ -1,4 +1,5 @@
 import { messages } from "@prisma/client";
+import { notFoundError, unauthorizedError } from "helpers/errors";
 import * as messagesRepository from "repositories/messages-repository";
 
 async function findMessages() {
@@ -13,6 +14,19 @@ async function createMessage(data: CreateMessageParams) {
 	return messagesRepository.createMessage(data);
 }
 
-export type CreateMessageParams = Omit<messages, "id" | "date">;
+async function updateMessage(data: UpdateMessageParams) {
+	const message = await messagesRepository.findMessageById(data.messageId);
 
-export { findMessages, findMessagesSentByUser, createMessage };
+	if (!message) throw notFoundError();
+
+	if (message.userId !== data.userId) throw unauthorizedError();
+
+	return messagesRepository.updateMessage(data);
+}
+
+export type CreateMessageParams = Omit<messages, "id" | "date">;
+export type UpdateMessageParams = Omit<messages, "id" | "date"> & {
+	messageId: number;
+};
+
+export { findMessages, findMessagesSentByUser, createMessage, updateMessage };
