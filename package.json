@@ -15,7 +15,7 @@
 		"test:migration:generate": "npm run test:load-envs npx prisma migrate dev",
 		"dev:load-envs": "dotenv -e .env.development",
 		"test:load-envs": "dotenv -e .env.test",
-		"seed": "npm run test:load-envs prisma db seed"
+		"seed": "npm run dev:load-envs prisma db seed"
 	},
 	"prisma": {
 		"seed": "ts-node prisma/seed.ts"
