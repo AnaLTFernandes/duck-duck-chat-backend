@@ -1,19 +1,19 @@
 import supertest from "supertest";
 import httpStatus from "http-status";
 import jwt from "jsonwebtoken";
+import { faker } from "@faker-js/faker";
+import { prisma } from "database/prisma";
 import server from "server";
+import { createMessage } from "../factories";
 import { cleanDatabase } from "../helpers/clean-database";
 import {
 	generateValidToken,
 	generateValidUser,
 } from "../helpers/generate-data";
-import { createMessage } from "../factories";
-import { faker } from "@faker-js/faker";
-import { prisma } from "database/prisma";
 
 const app = supertest(server);
 
-beforeEach(async () => {
+beforeAll(async () => {
 	await cleanDatabase();
 });
 
@@ -224,6 +224,93 @@ describe("PUT /messages/:id", () => {
 
 				expect(response.status).toBe(httpStatus.NO_CONTENT);
 			});
+		});
+	});
+});
+
+describe("DELETE /messages/:id", () => {
+	const route = "/messages";
+
+	it("should return status 401 when no token is sent", async () => {
+		const response = await app.delete(`${route}/1`);
+		expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+	});
+
+	it("should return status 401 when token is invalid", async () => {
+		const token = `Bearer ${faker.lorem.words()}`;
+		const response = await app.delete(`${route}/1`).set("Authorization", token);
+		expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+	});
+
+	describe("when token is valid", () => {
+		it("should return status 401 if there is no active session for the user", async () => {
+			const { id } = await generateValidUser();
+			const token = jwt.sign({ user: id }, process.env.JWT_SECRET);
+			const authorization = `Bearer ${token}`;
+
+			const response = await app
+				.delete(`${route}/1`)
+				.set("Authorization", authorization);
+
+			expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+		});
+
+		it("should return status 400 when id params is invalid", async () => {
+			const token = await generateValidToken();
+
+			const response = await app
+				.delete(`${route}/0`)
+				.set("Authorization", token);
+
+			expect(response.status).toBe(httpStatus.BAD_REQUEST);
+		});
+
+		it("should return status 404 when there is no message with given id", async () => {
+			const token = await generateValidToken();
+
+			const response = await app
+				.delete(`${route}/1`)
+				.set("Authorization", token);
+
+			expect(response.status).toBe(httpStatus.NOT_FOUND);
+		});
+
+		it("should return status 401 when user is not the owner of the message", async () => {
+			const token = await generateValidToken();
+			const otherUser = await generateValidUser();
+			const message = await createMessage(otherUser.id);
+
+			const response = await app
+				.delete(`${route}/${message.id}`)
+				.set("Authorization", token);
+
+			expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+		});
+
+		it("should return status 204 and no data", async () => {
+			const user = await generateValidUser();
+			const token = await generateValidToken(user);
+			const message = await createMessage(user.id);
+
+			const response = await app
+				.delete(`${route}/${message.id}`)
+				.set("Authorization", token);
+
+			expect(response.status).toBe(httpStatus.NO_CONTENT);
+		});
+
+		it("should delete the message in database", async () => {
+			const user = await generateValidUser();
+			const token = await generateValidToken(user);
+			const message = await createMessage(user.id);
+
+			const initialMessagesCount = await prisma.messages.count();
+
+			await app.delete(`${route}/${message.id}`).set("Authorization", token);
+
+			const finalMessagesCount = await prisma.messages.count();
+
+			expect(finalMessagesCount).toBe(initialMessagesCount - 1);
 		});
 	});
 });

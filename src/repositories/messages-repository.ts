@@ -36,6 +36,14 @@ function updateMessage({ messageId, ...data }: UpdateMessageParams) {
 	});
 }
 
+function deleteMessage(id: number) {
+	return prisma.messages.delete({
+		where: {
+			id,
+		},
+	});
+}
+
 type CreateMessageParams = Omit<messages, "id" | "date">;
 type UpdateMessageParams = Omit<messages, "id" | "date"> & {
 	messageId: number;
@@ -47,4 +55,5 @@ export {
 	findMessageById,
 	createMessage,
 	updateMessage,
+	deleteMessage,
 };

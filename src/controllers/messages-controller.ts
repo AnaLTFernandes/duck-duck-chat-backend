@@ -63,4 +63,33 @@ async function edit(req: Request, res: Response) {
 	}
 }
 
-export { listAll, listAllSentByAnUser, insert, edit };
+async function deleteMessage(req: Request, res: Response) {
+	const { userId } = res.locals;
+	const id = Number(req.params.id);
+
+	try {
+		await messagesService.deleteMessage({
+			userId,
+			messageId: id,
+		});
+
+		return responseHelper.NO_CONTENT({ res });
+	} catch (error) {
+		if (error.name === "NotFound") {
+			return responseHelper.NOT_FOUND({
+				res,
+				body: { message: "Não existe mensagem com esse id." },
+			});
+		}
+
+		if (error.name === "Unauthorized") {
+			return responseHelper.UNAUTHORIZED({
+				res,
+			});
+		}
+
+		return responseHelper.SERVER_ERROR({ res });
+	}
+}
+
+export { listAll, listAllSentByAnUser, insert, edit, deleteMessage };
